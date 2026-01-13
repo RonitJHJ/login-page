@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up</title>
+    <!-- Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-page: #0F172A;
+            --bg-card: #1F2937;
+            --bg-input: #111827;
+            --text-main: #E5E7EB;
+            --text-muted: #9CA3AF;
+            --primary: #3B82F6;
+            --primary-hover: #2563EB;
+            --error: #EF4444;
+            --radius: 12px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* --- LOGIN CARD --- */
+        .login-card {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 400px;
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #F3F4F6;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        /* --- FORM --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--bg-input);
+            border: 1px solid #374151;
+            /* Subtle dark border */
+            border-radius: var(--radius);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* --- ERROR STATE STYLES --- */
+        .form-input.error {
+            border-color: var(--error);
+            border-bottom-width: 2px;
+            /* Thin red underline effect on border */
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            height: 0;
+            overflow: hidden;
+            display: block;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+            height: auto;
+            margin-top: 0.4rem;
+        }
+
+        /* --- BUTTONS & LINKS --- */
+        .forgot-pass {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .forgot-pass:hover {
+            color: var(--primary);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.9rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition), transform 0.1s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            background-color: #6B7280;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* --- TOGGLE SIGN UP --- */
+        .toggle-mode {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .toggle-mode a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .toggle-mode a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- SOCIAL LOGIN --- */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #374151;
+        }
+
+        .divider span {
+            padding: 0 0.8rem;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem;
+            background: #374151;
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-social:hover {
+            background: #4B5563;
+        }
+
+        .btn-social svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <header class="login-header">
+            <h2 id="headerTitle">Login</h2>
+            <p id="headerSubtitle">Please enter your details to sign in.</p>
+        </header>
+
+        <form id="authForm" novalidate>
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="name@example.com">
+                <span class="error-message" id="emailError">Please enter a valid email address.</span>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••">
+                <span class="error-message" id="passwordError">Password must be at least 6 characters.</span>
+            </div>
+
+            <a href="#" class="forgot-pass" id="forgotLink">Forgot password?</a>
+
+            <button type="submit" class="btn-login" id="submitBtn">Sign In</button>
+
+            <!-- Toggle Sign Up -->
+            <div class="toggle-mode">
+                <span id="toggleText">Don't have an account? </span>
+                <a id="toggleLink">Sign up</a>
+            </div>
+
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <!-- Google -->
+                <button type="button" class="btn-social" id="googleBtn" aria-label="Sign in with Google">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                            fill="#4285F4" />
+                        <path
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                            fill="#34A853" />
+                        <path
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                            fill="#FBBC05" />
+                        <path
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                            fill="#EA4335" />
+                    </svg>
+                </button>
+
+                <!-- GitHub -->
+                <button type="button" class="btn-social" id="githubBtn" aria-label="Sign in with GitHub">
+                    <svg viewBox="0 0 24 24" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                </button>
+
+                <!-- Microsoft -->
+                <button type="button" class="btn-social" id="microsoftBtn" aria-label="Sign in with Microsoft">
+                    <svg viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#f35325" d="M1 1h10v10H1z" />
+                        <path fill="#81bc06" d="M12 1h10v10H12z" />
+                        <path fill="#05a6f0" d="M1 12h10v10H1z" />
+                        <path fill="#ffba08" d="M12 12h10v10H12z" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Firebase SDKs (Modular) -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Firebase Configuration (From User)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCySxy68dTdSoDbl_RPYwoljm-xQT49xUI",
+            authDomain: "login-page-cec99.firebaseapp.com",
+            projectId: "login-page-cec99",
+            storageBucket: "login-page-cec99.firebasestorage.app",
+            messagingSenderId: "208620461160",
+            appId: "1:208620461160:web:c9ae042d0fbcb0a9c0afdd",
+            measurementId: "G-YW4ZWPP8HH"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Redirect if already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'home.html';
+            }
+        });
+
+        // UI Interactions
+        const form = document.getElementById('authForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const submitBtn = document.getElementById('submitBtn');
+        const forgotLink = document.getElementById('forgotLink');
+        const headerTitle = document.getElementById('headerTitle');
+        const headerSubtitle = document.getElementById('headerSubtitle');
+        const toggleText = document.getElementById('toggleText');
+        const toggleLink = document.getElementById('toggleLink');
+
+        let isSignUpMode = false;
+
+        // --- VALIDATION HELPER FUNCTIONS ---
+        const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
+
+        const showError = (input, errorElement, message) => {
+            input.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        };
+
+        const clearError = (input, errorElement) => {
+            input.classList.remove('error');
+            errorElement.classList.remove('show');
+        };
+
+        // Remove errors on input
+        emailInput.addEventListener('input', () => { if (emailInput.classList.contains('error')) clearError(emailInput, emailError); });
+        passwordInput.addEventListener('input', () => { if (passwordInput.classList.contains('error')) clearError(passwordInput, passwordError); });
+
+        // --- TOGGLE MODE ---
+        toggleLink.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            if (isSignUpMode) {
+                headerTitle.textContent = "Create Account";
+                headerSubtitle.textContent = "Start your journey with us.";
+                submitBtn.textContent = "Sign Up";
+                toggleText.textContent = "Already have an account? ";
+                toggleLink.textContent = "Log in";
+                forgotLink.style.display = 'none';
+            } else {
+                headerTitle.textContent = "Login";
+                headerSubtitle.textContent = "Please enter your details to sign in.";
+                submitBtn.textContent = "Sign In";
+                toggleText.textContent = "Don't have an account? ";
+                toggleLink.textContent = "Sign up";
+                forgotLink.style.display = 'block';
+            }
+            clearError(emailInput, emailError);
+            clearError(passwordInput, passwordError);
+        });
+
+        // --- FORM SUBMISSION ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let isValid = true;
+
+            // Simple Validation
+            if (emailInput.value.trim() === '') { showError(emailInput, emailError, "Email is required."); isValid = false; }
+            else if (!isValidEmail(emailInput.value)) { showError(emailInput, emailError, "Invalid email address."); isValid = false; }
+
+            if (passwordInput.value.trim() === '') { showError(passwordInput, passwordError, "Password is required."); isValid = false; }
+            else if (passwordInput.value.length < 6) { showError(passwordInput, passwordError, "Password must be at least 6 characters."); isValid = false; }
+
+            if (!isValid) return;
+
+            // Firebase Auth
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const originalText = submitBtn.textContent;
+
+            submitBtn.textContent = isSignUpMode ? "Creating..." : "Signing In...";
+            submitBtn.disabled = true;
+
+            try {
+                let userCredential;
+                if (isSignUpMode) {
+                    // Sign Up
+                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    // Redirect happens via onAuthStateChanged
+                } else {
+                    // Sign In
+                    userCredential = await signInWithEmailAndPassword(auth, email, password);
+                }
+                console.log("User:", userCredential.user);
+            } catch (error) {
+                console.error("Firebase Error:", error.code, error.message);
+                let msg = "An error occurred.";
+
+                // Map Firebase errors to user friendly messages
+                if (error.code === 'auth/email-already-in-use') msg = "That email is already in use.";
+                else if (error.code === 'auth/invalid-credential') msg = "Invalid email or password.";
+                else if (error.code === 'auth/user-not-found') msg = "No user found with this email.";
+                else if (error.code === 'auth/wrong-password') msg = "Incorrect password.";
+                else if (error.code === 'auth/network-request-failed') msg = "Network error. Check connection.";
+                else msg = error.message;
+
+                showError(passwordInput, passwordError, msg);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // --- SOCIAL BUTTONS ---
+        document.getElementById('googleBtn').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                console.log(result.user);
+                // Redirect happens via onAuthStateChanged
+            } catch (error) {
+                console.error(error);
+                alert(`Google Login Failed: ${error.message}`);
+            }
+        });
+
+        document.getElementById('githubBtn').addEventListener('click', () => {
+            alert("GitHub Login: Would require GithubAuthProvider setup in Firebase Console.");
+        });
+
+        document.getElementById('microsoftBtn').addEventListener('click', () => {
+            alert("Microsoft Login: Would require OAuthProvider setup in Firebase Console.");
+        });
+
+    </script>
+</body>
+
+</html>
